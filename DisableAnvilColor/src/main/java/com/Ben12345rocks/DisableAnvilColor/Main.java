@@ -1,5 +1,7 @@
 package com.Ben12345rocks.DisableAnvilColor;
 
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,6 +13,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Ben12345rocks.AdvancedCore.Util.Item.ItemBuilder;
+import com.Ben12345rocks.AdvancedCore.Util.Metrics.BStatsMetrics;
+import com.Ben12345rocks.AdvancedCore.Util.Metrics.MCStatsMetrics;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -26,6 +30,15 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		plugin = this;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+
+		try {
+			MCStatsMetrics metrics = new MCStatsMetrics(this);
+			metrics.start();
+		} catch (IOException e) {
+			plugin.getLogger().info("Can't submit metrics stats");
+		}
+
+		new BStatsMetrics(this);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
