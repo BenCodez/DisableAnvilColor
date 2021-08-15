@@ -1,5 +1,5 @@
 name: ${project.name}
 version: ${project.version}
-main: com.Ben12345rocks.DisableAnvilColor.Main
-author: Ben12345rocks
+main: com.bencodez.disableanvilcolor.DisableAnvilColorMain
+author: BenCodez
 api-version: 1.13

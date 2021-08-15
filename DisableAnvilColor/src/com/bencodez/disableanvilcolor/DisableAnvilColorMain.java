@@ -1,7 +1,6 @@
-package com.Ben12345rocks.DisableAnvilColor;
+package com.bencodez.disableanvilcolor;
 
-import java.io.IOException;
-
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,16 +9,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.Ben12345rocks.AdvancedCore.Util.Item.ItemBuilder;
-import com.Ben12345rocks.AdvancedCore.Util.Metrics.BStatsMetrics;
-import com.Ben12345rocks.AdvancedCore.Util.Metrics.MCStatsMetrics;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class Main extends JavaPlugin implements Listener {
-	static Main plugin;
+public class DisableAnvilColorMain extends JavaPlugin implements Listener {
+	static DisableAnvilColorMain plugin;
 
 	@Override
 	public void onDisable() {
@@ -31,14 +27,7 @@ public class Main extends JavaPlugin implements Listener {
 		plugin = this;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 
-		try {
-			MCStatsMetrics metrics = new MCStatsMetrics(this);
-			metrics.start();
-		} catch (IOException e) {
-			plugin.getLogger().info("Can't submit metrics stats");
-		}
-
-		new BStatsMetrics(this);
+		new Metrics(this, 1688);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -60,9 +49,15 @@ public class Main extends JavaPlugin implements Listener {
 		try {
 			if (event.getClickedInventory().getItem(0) != null
 					&& !event.getClickedInventory().getItem(0).getType().equals(Material.AIR)) {
-				ItemBuilder item = new ItemBuilder(event.getClickedInventory().getItem(0));
-				if (event.getCurrentItem().hasItemMeta() && item.hasCustomDisplayName()) {
-					String str = item.getName();
+				ItemStack item = event.getClickedInventory().getItem(0);
+				boolean hasCustomDisplayName = false;
+				if (item.hasItemMeta()) {
+					if (item.getItemMeta().hasDisplayName()) {
+						hasCustomDisplayName = true;
+					}
+				}
+				if (event.getCurrentItem().hasItemMeta() && hasCustomDisplayName) {
+					String str = item.getItemMeta().getDisplayName();
 					boolean hasColorCodes = !(str.equals(ChatColor.stripColor(str)));
 					if (hasColorCodes) {
 						event.setCancelled(true);
